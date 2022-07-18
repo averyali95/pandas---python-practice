@@ -69,4 +69,9 @@ poke_file.drop('Total', axis=1, inplace=True)
 # The axis argument specifies whether to drop rows (0) or columns (1).
 # The inplace argument specifies to drop the columns in place without reassigning the DataFrame.
 
-print(poke_file.head(5))
+""" Saving our Data (Exporting into desired Format """
+
+#poke_file['Total'] = poke_file.iloc[:, 4:10].sum(axis=1)
+#poke_file.to_csv("modified.csv", index=False) # index number is removed (usually in first column
+#poke_file.to_excel("modified.xlsx", index=False)
+#poke_file.to_csv("modified.tct", index=False, sep='\t')
