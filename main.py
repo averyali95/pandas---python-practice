@@ -1,4 +1,5 @@
-import pandas as pd # import pandas library
+import pandas as pd  # import pandas library
+
 """ Reading Files """
 # set poke_file to values within pokemon_data.csv
 poke_file = pd.read_csv('pokemon_data.csv')
@@ -13,7 +14,7 @@ poke_file = pd.read_csv('pokemon_data.csv')
 
 """ Reading Data in Pandas """
 ## Reading headers
-#print(poke_file.columns)
+# print(poke_file.columns)
 
 ## Reading each column
 # print(poke_file['Name'][0:5]) # print names column only for first five of dataframe
@@ -23,11 +24,11 @@ poke_file = pd.read_csv('pokemon_data.csv')
 # print(poke_file.iloc[1]) #iloc = imageing location- gives back everything in first row of data
 # print(poke_file.iloc[0:3]) #return first three rows of data
 
-#iterate through table and pull all columns data in index and Name only
-#for index, row in poke_file.iterrows():
+# iterate through table and pull all columns data in index and Name only
+# for index, row in poke_file.iterrows():
 #    print(index, row['Name'])
 
-#filters and prints all row data where each pokemon is a grass type
+# filters and prints all row data where each pokemon is a grass type
 # .loc is used for finding specific data in data set based on textural information
 # print(poke_file.loc[(poke_file['Type 1'] == 'Grass')])
 # print(poke_file.loc[(poke_file['Type 1'] == 'Grass') & (poke_file['Generation'] == 1)])
@@ -39,39 +40,63 @@ poke_file = pd.read_csv('pokemon_data.csv')
 # gives us high level stats of data (avg,mean,standard deviation, min, max)
 # print(poke_file.describe())
 
-#sort by names in descending order and show top 10 results
+# sort by names in descending order and show top 10 results
 # print(poke_file.sort_values('Name', ascending = False).head(10))
 
-#Sort by multiple column types
+# Sort by multiple column types
 # print(poke_file.sort_values(['Name', 'HP']))
 
-#Sort ascending Name with Descending Generation
+# Sort ascending Name with Descending Generation
 # print(poke_file.sort_values(['Name', 'Generation'], ascending=[1, 0]))
 
 """ Making Changes to the data """
 print(poke_file.head(5))
 
-#add a total column which adds all the HP, attack info together for each pokemon - We can possibly use this to rank pokemon
+# add a total column which adds all the HP, attack info together for each pokemon - We can possibly use this to rank pokemon
 poke_file['Total'] = poke_file['HP'] + poke_file['Attack'] + poke_file['Defense'] + poke_file['Sp. Atk'] + \
                      poke_file['Sp. Def'] + poke_file['Speed']
 
-#another way to do this is:
+# another way to do this is:
 
-#Based on column and row number, we will use iloc to grab columns 4->9 and add them together horizontally (AKA axis = 1)
+# Based on column and row number, we will use iloc to grab columns 4->9 and add them together horizontally (AKA axis = 1)
 # AXIS = 0 is add vertically
 # the iloc[:, 4:10] -> : means grab all rows, 4:10 means grab only columns 4,5,6,7,8,9 *10 IS EXCLUDED
-#poke_file['Total'] = poke_file.iloc[:, 4:10].sum(axis=1)
+# poke_file['Total'] = poke_file.iloc[:, 4:10].sum(axis=1)
 
-print(poke_file.head(5))
+# print(poke_file.head(5))
 
-#we can drop data from the table
+# we can drop data from the table
 poke_file.drop('Total', axis=1, inplace=True)
 # The axis argument specifies whether to drop rows (0) or columns (1).
 # The inplace argument specifies to drop the columns in place without reassigning the DataFrame.
 
 """ Saving our Data (Exporting into desired Format """
 
-#poke_file['Total'] = poke_file.iloc[:, 4:10].sum(axis=1)
-#poke_file.to_csv("modified.csv", index=False) # index number is removed (usually in first column
-#poke_file.to_excel("modified.xlsx", index=False)
-#poke_file.to_csv("modified.tct", index=False, sep='\t')
+# poke_file['Total'] = poke_file.iloc[:, 4:10].sum(axis=1)
+# poke_file.to_csv("modified.csv", index=False) # index number is removed (usually in first column
+# poke_file.to_excel("modified.xlsx", index=False)
+# poke_file.to_csv("modified.tct", index=False, sep='\t') # save to text file with data separated by tabs
+
+""" Filtering Data """
+
+poke_file.loc[poke_file['Type 1'] == 'Grass']
+
+# two conditions seperated by parenthasis, within pandas we use & vs and, | -> or vs or
+filter_data = poke_file.loc[(poke_file['Type 1'] == 'Grass') & (poke_file['Type 2'] == 'Poison') & (poke_file['HP'] > 70)]
+print(filter_data)
+
+# we filtered the data, however the new dataframe kept the old indexes in the first row, we want to reset the index's
+# filter_data = filter_data.reset_index()
+
+# by default, this will save the old index alongside the new index values
+# if we dont want this
+filter_data.reset_index(drop=True, inplace=True)
+# now we have our filtered data, set to a new dataframe variable with new index's and got rid of the old (using inline,
+# will use less data
+print(filter_data)
+
+#filter names of pokemon with only mega names
+print(poke_file.loc[poke_file['Name'].str.contains('Mega')])
+
+# We can also filter it out
+print(poke_file.loc[~poke_file['Name'].str.contains('Mega')])
