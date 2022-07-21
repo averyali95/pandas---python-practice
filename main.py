@@ -1,3 +1,5 @@
+import re
+
 import pandas as pd  # import pandas library
 
 """ Reading Files """
@@ -93,10 +95,51 @@ print(filter_data)
 filter_data.reset_index(drop=True, inplace=True)
 # now we have our filtered data, set to a new dataframe variable with new index's and got rid of the old (using inline,
 # will use less data
-print(filter_data)
+# print(filter_data)
 
 #filter names of pokemon with only mega names
-print(poke_file.loc[poke_file['Name'].str.contains('Mega')])
+# print(poke_file.loc[poke_file['Name'].str.contains('Mega')])
 
-# We can also filter it out
-print(poke_file.loc[~poke_file['Name'].str.contains('Mega')])
+# We can also filter it out using "~"
+# print(poke_file.loc[~poke_file['Name'].str.contains('Mega')])
+
+""" RegX funcations """
+# import re
+
+# We can filter for fire and grass pokemon only using regular expressions
+print(poke_file.loc[poke_file['Type 1'].str.contains('Fire|Grass', regex=True)])
+
+# We want to filter only pokemon names starting with Pi
+# regex - ^ -> beginning on line, [a-z] -> next set of letters can be characters a - z, * means 1 or more values after pi
+# flags ignore case sensitivy
+print(poke_file.loc[poke_file['Name'].str.contains('^Pi[a-z]*', flags=re.I, regex=True)])
+
+""" Conditional Changes - Changes data frame based on conditions we filtered out by"""
+
+# Say we want to change the name of the fire in type 1 too flameboy
+poke_file.loc[poke_file['Type 1'] == 'Fire', 'Type 1'] = 'Flameboy'
+print(poke_file)
+
+# We can change multiple columns values
+# Say we want to change the Generation and Legendary field based on the total value being over 500
+poke_file = pd.read_csv('modified.csv')
+poke_file.loc[poke_file['Total'] > 500, ['Generation', "Legendary"]] = ["Test", "Value"]
+print(poke_file)
+
+""" Aggregate Statistics (Groubby) mean, sum, count """
+poke_file = pd.read_csv('modified.csv')
+
+# Want to see avg HP and attack of all the pokemon
+print(poke_file.groupby(['Type 1']).mean())
+
+# We want to see which group of pokemon has the highest average attack in Desc order.
+# mean() calculates average, sort_value() sorts list by certain column in asc od desc order
+print(poke_file.groupby(['Type 1']).mean().sort_values('Attack', ascending=False))
+
+# We want to count how many pokemon are in each category.
+# We want to create a seperate column for each pokemon enterance with the value of one due to type 2 values
+poke_file['Count'] = 1
+print(poke_file.groupby(['Type 1']).count()['Count'])
+
+# We can group 2 columns together
+print(poke_file.groupby(['Type 1', 'Type 2']).count()['Count'])
