@@ -143,3 +143,13 @@ print(poke_file.groupby(['Type 1']).count()['Count'])
 
 # We can group 2 columns together
 print(poke_file.groupby(['Type 1', 'Type 2']).count()['Count'])
+
+""" Working with large sets of data """
+# pandas allows you to read in smaller chunks of files at a time
+
+df = pd.read_csv("modified.csv", chunksize=5)
+# chunksize will load in 5 rows worth of data
+
+for df in pd.read_csv("modified.csv", chunksize=5):
+    print("Data frame")
+    print(df)
